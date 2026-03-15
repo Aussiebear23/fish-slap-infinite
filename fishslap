@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fish Slap Infinite</title>
+
+<style>
+
+body{
+    margin:0;
+    height:100vh;
+    background:#111;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    font-family:Arial, sans-serif;
+    overflow:hidden;
+}
+
+/* Title always above */
+#title{
+    position:fixed;
+    top:20px;
+    width:100%;
+    text-align:center;
+    font-size:34px;
+    color:white;
+    z-index:10;
+    text-shadow:0 0 10px black;
+}
+
+/* Responsive GIF container */
+#gifContainer{
+    position:relative;
+    width:90%;
+    max-width:900px;
+    aspect-ratio:16/9;
+}
+
+/* GIF styling */
+.gif{
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    border-radius:12px;
+    opacity:0;
+    transition:opacity 1s ease;
+}
+
+.gif.active{
+    opacity:1;
+}
+
+/* sparkle particles */
+.sparkle{
+    position:fixed;
+    width:10px;
+    height:10px;
+    background:white;
+    border-radius:50%;
+    pointer-events:none;
+    animation:sparkleAnim 0.9s forwards;
+}
+
+@keyframes sparkleAnim{
+    0%{transform:scale(1);opacity:1;}
+    100%{transform:scale(4);opacity:0;}
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="title">FISH SLAP INFINATE 🐟 Thanks Louis</div>
+
+<div id="gifContainer">
+
+<img class="gif active" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/rgjwOLuv0azHW/giphy.gif">
+<img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jX708Wo6abfC8/giphy.gif">
+<img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT0BKGkoBW46ip9OvK/giphy.gif">
+<img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/y6IvUPfopAZqg/giphy.gif">
+<img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26Fff1rJ62MGWEdzO/giphy.gif">
+<img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ldUr9VPakWkjNn1Paj/giphy.gif">
+<img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/M9pbjBHbdYs36/giphy.gif">
+
+</div>
+
+<script>
+
+const gifs = document.querySelectorAll(".gif");
+let index = 0;
+
+function nextGif(){
+    gifs[index].classList.remove("active");
+    index = (index + 1) % gifs.length;
+    gifs[index].classList.add("active");
+}
+
+setInterval(nextGif, 4000);
+
+/* sparkle effect */
+
+function sparkle(x,y){
+    const s=document.createElement("div");
+    s.className="sparkle";
+    s.style.left=x+"px";
+    s.style.top=y+"px";
+    document.body.appendChild(s);
+    setTimeout(()=>{s.remove();},900);
+}
+
+document.addEventListener("mousemove",(e)=>{
+    sparkle(e.clientX,e.clientY);
+});
+
+document.addEventListener("touchmove",(e)=>{
+    const t=e.touches[0];
+    sparkle(t.clientX,t.clientY);
+});
+
+</script>
+
+</body>
+</html>
