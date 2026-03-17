@@ -1,286 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Fish Slap Infinite</title>
 
-<!-- Preload GIFs so the first load feels faster -->
-<link rel="preload" as="image" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/rgjwOLuv0azHW/giphy.gif">
-<link rel="preload" as="image" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jX708Wo6abfC8/giphy.gif">
-<link rel="preload" as="image" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT0BKGkoBW46ip9OvK/giphy.gif">
-<link rel="preload" as="image" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/y6IvUPfopAZqg/giphy.gif">
-<link rel="preload" as="image" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26Fff1rJ62MGWEdzO/giphy.gif">
-<link rel="preload" as="image" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ldUr9VPakWkjNn1Paj/giphy.gif">
-<link rel="preload" as="image" href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/M9pbjBHbdYs36/giphy.gif">
-
 <style>
-  :root{box-sizing:border-box}
-  *,*::before,*::after{box-sizing:inherit}
-  body{
-    margin:0;
-    height:100vh;
-    background:#111;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    font-family:Arial, sans-serif;
-    overflow:hidden;
-    -webkit-tap-highlight-color: transparent;
-  }
+body{
+  margin:0;
+  background:#111;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+  font-family:Arial;
+}
 
-  /* Title */
-  #title{
-    position:fixed;
-    top:20px;
-    width:100%;
-    text-align:center;
-    font-size:34px;
-    color:white;
-    z-index:10;
-    text-shadow:0 0 10px black;
-  }
+/* Title */
+#title{
+  position:fixed;
+  top:20px;
+  width:100%;
+  text-align:center;
+  color:white;
+  font-size:30px;
+  z-index:10;
+}
 
-  /* Start message under title */
-  #startMessage{
-    margin-top:10px;
-    font-size:18px;
-    color:white;
-    opacity:0.95;
-    animation:pulse 1.5s infinite;
-  }
+/* Message */
+#startMessage{
+  font-size:16px;
+  margin-top:8px;
+  animation:pulse 1.5s infinite;
+}
 
-  body.mobile #startMessage{ font-size:22px; }
+@keyframes pulse{
+  0%{opacity:0.6;}
+  50%{opacity:1;}
+  100%{opacity:0.6;}
+}
 
-  @keyframes pulse{
-    0%{opacity:0.6;}
-    50%{opacity:1;}
-    100%{opacity:0.6;}
-  }
+/* GIF container */
+#gifContainer{
+  position:relative;
+  width:88%;
+  max-width:900px;
+  height:55vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
 
-  /* GIF container - larger on desktop, smaller on mobile */
+/* Desktop */
+@media(min-width:1025px){
   #gifContainer{
-    position:relative;
-    width:94%;
-    max-width:1600px;
-    /* Desktop: leave room for title & button but be large */
-    height:calc(100vh - 120px);
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    height:58vh;
+    max-width:950px;
   }
+}
 
-  /* Tablet & mobile overrides added by JS classes */
-  body.tablet #gifContainer{ height:75vh; max-width:1100px; }
-  body.mobile #gifContainer{ height:62vh; max-width:900px; }
+/* Mobile */
+@media(max-width:600px){
+  #gifContainer{
+    height:38vh;
+    max-width:92%;
+  }
+}
 
-  /* GIF images fill height on large screens, scale down on mobile */
-  .gif{
-    position:absolute;
-    width:auto;
-    height:100%;
-    object-fit:contain;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    border-radius:12px;
+/* GIF */
+.gif{
+  position:absolute;
+  max-width:100%;
+  max-height:100%;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  border-radius:12px;
+  opacity:0;
+  transition:opacity 1s ease;
+}
+
+.gif.active{
+  opacity:1;
+}
+
+/* Sparkles */
+.sparkle{
+  position:fixed;
+  width:10px;
+  height:10px;
+  background:white;
+  border-radius:50%;
+  pointer-events:none;
+  animation:sparkle 0.9s forwards;
+}
+
+@keyframes sparkle{
+  to{
+    transform:scale(4);
     opacity:0;
-    transition:opacity 1s ease, transform 0.4s ease;
-    image-rendering: auto;
   }
+}
 
-  /* on very narrow screens prefer width 100% and auto height */
-  body.mobile .gif{
-    width:100%;
-    height:auto;
-    max-height:100%;
-    transform:translate(-50%,-50%);
-  }
+/* Button */
+#muteButton{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  padding:14px 20px;
+  font-size:16px;
+  background:#222;
+  color:white;
+  border:none;
+  border-radius:10px;
+}
 
-  .gif.active{ opacity:1; }
-
-  /* Sparkles */
-  .sparkle{
-    position:fixed;
-    width:10px;
-    height:10px;
-    background:white;
-    border-radius:50%;
-    pointer-events:none;
-    animation:sparkleAnim 0.9s forwards;
-    z-index:30;
-  }
-
-  @keyframes sparkleAnim{
-    0%{transform:scale(1); opacity:1;}
-    100%{transform:scale(4); opacity:0;}
-  }
-
-  /* Button default (PC) */
+/* BIG mobile button */
+@media(max-width:600px){
   #muteButton{
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    padding:12px 18px;
-    font-size:16px;
-    border:none;
-    border-radius:10px;
-    background:#222;
-    color:white;
-    cursor:pointer;
-    z-index:20;
-    box-shadow:0 6px 18px rgba(0,0,0,0.4);
-    -webkit-user-select:none;
-    user-select:none;
-  }
-
-  /* Tablet */
-  body.tablet #muteButton{
-    padding:16px 24px;
-    font-size:18px;
-    border-radius:12px;
-  }
-
-  /* Mobile */
-  body.mobile #muteButton{
     left:50%;
-    right:auto;
     transform:translateX(-50%);
-    bottom:25px;
-    padding:20px 30px;
-    font-size:20px;
-    border-radius:14px;
+    padding:22px 36px;
+    font-size:22px;
+    border-radius:16px;
   }
-
-  /* small-screen tuning */
-  @media (max-width:420px){
-    #title{ font-size:24px; top:14px; }
-  }
+}
 </style>
 </head>
 <body>
 
-  <div id="title">
-    FISH SLAP INFINATE 🐟 Thanks Louis
-    <div id="startMessage">Touch/click on your screen/webpage for a surprise 😉</div>
-  </div>
+<div id="title">
+  FISH SLAP INFINATE 🐟 Thanks Louis
+  <div id="startMessage">Touch/click for a surprise 😉</div>
+</div>
 
-  <div id="gifContainer">
-    <img class="gif active" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/rgjwOLuv0azHW/giphy.gif" alt="">
-    <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/jX708Wo6abfC8/giphy.gif" alt="">
-    <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xT0BKGkoBW46ip9OvK/giphy.gif" alt="">
-    <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/y6IvUPfopAZqg/giphy.gif" alt="">
-    <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26Fff1rJ62MGWEdzO/giphy.gif" alt="">
-    <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ldUr9VPakWkjNn1Paj/giphy.gif" alt="">
-    <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNuaDE4eGRmazAzeWhzNjZtcmpwNDM4MDgxNzlmc214bGY5bDdyeSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/M9pbjBHbdYs36/giphy.gif" alt="">
-  </div>
+<div id="gifContainer">
+  <img class="gif active" src="https://media.giphy.com/media/rgjwOLuv0azHW/giphy.gif">
+  <img class="gif" src="https://media.giphy.com/media/jX708Wo6abfC8/giphy.gif">
+  <img class="gif" src="https://media.giphy.com/media/xT0BKGkoBW46ip9OvK/giphy.gif">
+  <img class="gif" src="https://media.giphy.com/media/y6IvUPfopAZqg/giphy.gif">
+</div>
 
-  <!-- YOUR EXACT BUTTON -->
-  <button id="muteButton">🔊 Mute</button>
+<button id="muteButton">🔊 Mute</button>
 
-  <!-- YOUR EXACT IFRAME -->
-  <iframe
-    id="musicPlayer"
-    width="0"
-    height="0"
-    src="https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs"
-    frameborder="0"
-    allow="autoplay">
-  </iframe>
+<!-- Music -->
+<iframe id="musicPlayer"
+width="0"
+height="0"
+src=""
+allow="autoplay">
+</iframe>
 
 <script>
-/* ---------- device detection (classes used by CSS) ---------- */
-function detectDevice(){
-  const width = window.innerWidth;
-  document.body.classList.remove('mobile','tablet','desktop');
-  if(width <= 600) document.body.classList.add('mobile');
-  else if(width <= 1024) document.body.classList.add('tablet');
-  else document.body.classList.add('desktop');
-}
-detectDevice();
-window.addEventListener('resize', detectDevice);
+const gifs = document.querySelectorAll(".gif");
+let i = 0;
 
-/* ---------- vibration helpers ---------- */
-function vibrateTap(){
-  if(navigator.vibrate) navigator.vibrate(50);
-}
-function vibrateSlap(){
-  if(navigator.vibrate) navigator.vibrate([40,20,40]);
-}
+setInterval(()=>{
+  gifs[i].classList.remove("active");
+  i = (i+1)%gifs.length;
+  gifs[i].classList.add("active");
 
-/* ---------- GIF loop ---------- */
-const gifs = document.querySelectorAll('.gif');
-let gifIndex = 0;
-function nextGif(){
-  gifs[gifIndex].classList.remove('active');
-  gifIndex = (gifIndex + 1) % gifs.length;
-  gifs[gifIndex].classList.add('active');
-  vibrateSlap(); // slap vibration on change
-}
-/* durations kept reasonable; change if needed */
-setInterval(nextGif, 8000);
+  if(navigator.vibrate){
+    navigator.vibrate([40,20,40]);
+  }
+},8000);
 
-/* ---------- sparkles ---------- */
+/* sparkles */
 function sparkle(x,y){
-  const s = document.createElement('div');
-  s.className = 'sparkle';
-  s.style.left = (x - 5) + 'px';
-  s.style.top  = (y - 5) + 'px';
+  const s=document.createElement("div");
+  s.className="sparkle";
+  s.style.left=x+"px";
+  s.style.top=y+"px";
   document.body.appendChild(s);
-  setTimeout(()=>s.remove(), 900);
-}
-document.addEventListener('mousemove', e => sparkle(e.clientX, e.clientY));
-document.addEventListener('touchmove', e => {
-  if(e.touches && e.touches[0]) sparkle(e.touches[0].clientX, e.touches[0].clientY);
-}, {passive:true});
-
-/* ---------- music logic kept as you had it ---------- */
-const iframe = document.getElementById('musicPlayer');
-const button = document.getElementById('muteButton');
-const startMessage = document.getElementById('startMessage');
-
-let started = false;
-let playing = true;
-
-/* first interaction anywhere: start (unmute + play by re-setting src) */
-function firstInteraction(){
-  if(started) return;
-  started = true;
-
-  // start music (user gesture)
-  iframe.src = "https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
-  button.textContent = "🔇 Mute";
-  playing = true;
-
-  // vibration feedback
-  if(navigator.vibrate) navigator.vibrate([50,30,50]);
-
-  // hide the message
-  if(startMessage) startMessage.style.display = 'none';
-
-  document.removeEventListener('click', firstInteraction);
-  document.removeEventListener('touchstart', firstInteraction);
+  setTimeout(()=>s.remove(),900);
 }
 
-document.addEventListener('click', firstInteraction);
-document.addEventListener('touchstart', firstInteraction, {passive:true});
+document.addEventListener("mousemove",e=>sparkle(e.clientX,e.clientY));
+document.addEventListener("touchmove",e=>{
+  sparkle(e.touches[0].clientX,e.touches[0].clientY);
+});
 
-/* Button behaviour - toggle play/stop (keeps original approach) */
-button.onclick = function(e){
-  e.preventDefault();
-  vibrateTap();
+/* music */
+const iframe=document.getElementById("musicPlayer");
+const btn=document.getElementById("muteButton");
+const msg=document.getElementById("startMessage");
+
+let started=false;
+let playing=false;
+
+/* tap anywhere */
+function interact(){
+  if(navigator.vibrate){
+    navigator.vibrate(60);
+  }
+
+  if(!started){
+    iframe.src="https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
+    msg.style.display="none";
+    started=true;
+    playing=true;
+    btn.textContent="🔇 Mute";
+  }
+}
+
+document.addEventListener("pointerdown",interact);
+
+/* button */
+btn.onclick=()=>{
+  if(navigator.vibrate){
+    navigator.vibrate(60);
+  }
 
   if(playing){
-    iframe.src = "";
-    button.textContent = "🔊 Unmute";
-    playing = false;
+    iframe.src="";
+    btn.textContent="🔊 Unmute";
+    playing=false;
   }else{
-    iframe.src = "https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
-    button.textContent = "🔇 Mute";
-    playing = true;
+    iframe.src="https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
+    btn.textContent="🔇 Mute";
+    playing=true;
   }
 };
 </script>
+
 </body>
 </html>
