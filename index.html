@@ -30,6 +30,25 @@ z-index:10;
 text-shadow:0 0 10px black;
 }
 
+/* Start message under title */
+#startMessage{
+margin-top:10px;
+font-size:18px;
+color:white;
+opacity:0.9;
+animation:pulse 1.5s infinite;
+}
+
+body.mobile #startMessage{
+font-size:22px;
+}
+
+@keyframes pulse{
+0%{opacity:0.6;}
+50%{opacity:1;}
+100%{opacity:0.6;}
+}
+
 /* GIF container */
 #gifContainer{
 position:relative;
@@ -71,7 +90,7 @@ animation:sparkleAnim 0.9s forwards;
 100%{transform:scale(4);opacity:0;}
 }
 
-/* Default button (PC) */
+/* Button default (PC) */
 #muteButton{
 position:fixed;
 bottom:20px;
@@ -109,7 +128,10 @@ border-radius:14px;
 
 <body>
 
-<div id="title">FISH SLAP INFINATE 🐟 Thanks Louis</div>
+<div id="title">
+  FISH SLAP INFINATE 🐟 Thanks Louis
+  <div id="startMessage">Touch/click on your screen/webpage for a surprise 😉</div>
+</div>
 
 <div id="gifContainer">
 
@@ -123,10 +145,8 @@ border-radius:14px;
 
 </div>
 
-<!-- YOUR EXACT BUTTON -->
 <button id="muteButton">🔊 Mute</button>
 
-<!-- YOUR EXACT IFRAME -->
 <iframe
 id="musicPlayer"
 width="0"
@@ -169,7 +189,7 @@ navigator.vibrate(50);
 
 function vibrateSlap(){
 if(navigator.vibrate){
-navigator.vibrate([40, 20, 40]);
+navigator.vibrate([40,20,40]);
 }
 }
 
@@ -182,7 +202,7 @@ gifs[index].classList.remove("active");
 index = (index + 1) % gifs.length;
 gifs[index].classList.add("active");
 
-vibrateSlap(); // 🐟 slap vibration
+vibrateSlap();
 }
 
 setInterval(nextGif, 8000);
@@ -203,14 +223,45 @@ const t=e.touches[0];
 sparkle(t.clientX,t.clientY);
 });
 
-/* MUSIC CONTROL */
+/* MUSIC */
 let playing = true;
 const iframe = document.getElementById("musicPlayer");
 const button = document.getElementById("muteButton");
+const startMessage = document.getElementById("startMessage");
 
+let started = false;
+
+/* FIRST TAP ANYWHERE */
+function firstInteraction(){
+
+if(started) return;
+
+started = true;
+
+/* start music */
+iframe.src = "https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
+button.textContent = "🔇 Mute";
+playing = true;
+
+/* vibration */
+if(navigator.vibrate){
+navigator.vibrate([50,30,50]);
+}
+
+/* hide message */
+startMessage.style.display = "none";
+
+document.removeEventListener("click", firstInteraction);
+document.removeEventListener("touchstart", firstInteraction);
+}
+
+document.addEventListener("click", firstInteraction);
+document.addEventListener("touchstart", firstInteraction);
+
+/* BUTTON */
 button.onclick = function(){
 
-vibrateTap(); // 📳 tap feedback
+vibrateTap();
 
 if(playing){
 iframe.src = "";
