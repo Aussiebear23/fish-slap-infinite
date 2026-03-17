@@ -14,7 +14,8 @@ body {
   align-items: center;
   height: 100vh;
   overflow: hidden;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
+  user-select: none; /* Prevents accidental text highlighting while slapping */
 }
 
 /* Title */
@@ -26,6 +27,7 @@ body {
   color: white;
   font-size: 30px;
   z-index: 10;
+  font-weight: bold;
 }
 
 /* Message */
@@ -33,6 +35,7 @@ body {
   font-size: 16px;
   margin-top: 8px;
   animation: pulse 1.5s infinite;
+  font-weight: normal;
 }
 
 @keyframes pulse {
@@ -71,7 +74,7 @@ body {
   }
 }
 
-/* ✅ FIXED: Smooth GIF Crossfades */
+/* GIF Styling */
 .gif {
   position: absolute;
   width: 100%;
@@ -82,32 +85,24 @@ body {
   transform: translate(-50%, -50%);
   border-radius: 12px;
   opacity: 0;
-  z-index: 1; /* Default background layer */
   transition: opacity 1s ease-in-out;
 }
 
-/* The GIF fading out stays underneath */
-.gif.last-active {
-  opacity: 1;
-  z-index: 1; 
-}
-
-/* The new GIF fades in on top */
 .gif.active {
   opacity: 1;
-  z-index: 2; 
 }
 
 /* Sparkles */
 .sparkle {
   position: fixed;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background: white;
   border-radius: 50%;
   pointer-events: none;
   animation: sparkle 0.9s forwards;
   z-index: 5;
+  box-shadow: 0 0 8px rgba(255,255,255,0.8);
 }
 
 @keyframes sparkle {
@@ -117,30 +112,53 @@ body {
   }
 }
 
-/* Button */
-#muteButton {
+/* Controls Container (Bottom layout) */
+#controls {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+/* Slap Counter */
+#slapCounter {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+/* Button */
+#muteButton {
   padding: 14px 20px;
   font-size: 16px;
   background: #222;
   color: white;
-  border: none;
+  border: 2px solid #444;
   border-radius: 10px;
-  z-index: 10;
   cursor: pointer;
+  font-weight: bold;
 }
 
-/* BIG mobile button */
+/* BIG mobile controls */
 @media(max-width: 600px) {
-  #muteButton {
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 22px 36px;
-    font-size: 22px;
-    border-radius: 16px;
+  #controls {
     bottom: 30px;
+  }
+  #muteButton {
+    padding: 18px 28px;
+    font-size: 20px;
+    border-radius: 16px;
+  }
+  #slapCounter {
+    font-size: 18px;
   }
 }
 </style>
@@ -148,44 +166,60 @@ body {
 <body>
 
 <div id="title">
-  FISH SLAP INFINATE 🐟 Thanks Louis
+  FISH SLAP INFINITE 🐟 Thanks Louis
   <div id="startMessage">Touch/click for a surprise 😉</div>
 </div>
 
 <div id="gifContainer">
-  <img class="gif active" src="https://media.giphy.com/media/rgjwOLuv0azHW/giphy.gif" alt="Fish slap 1">
+  <img class="gif active" style="z-index: 2;" src="https://media.giphy.com/media/rgjwOLuv0azHW/giphy.gif" alt="Fish slap 1">
   <img class="gif" src="https://media.giphy.com/media/jX708Wo6abfC8/giphy.gif" alt="Fish slap 2">
   <img class="gif" src="https://media.giphy.com/media/xT0BKGkoBW46ip9OvK/giphy.gif" alt="Fish slap 3">
   <img class="gif" src="https://media.giphy.com/media/y6IvUPfopAZqg/giphy.gif" alt="Fish slap 4">
 </div>
 
-<button id="muteButton">🔊 Mute</button>
+<div id="controls">
+  <div id="slapCounter">Slaps: 0</div>
+  <button id="muteButton">🔊 Mute</button>
+</div>
 
 <iframe id="musicPlayer" width="0" height="0" src="" allow="autoplay"></iframe>
 
 <script>
-// --- ✅ FIXED: SMOOTH GIF ROTATION ---
+// --- ✅ PERFECTED GIF CROSSFADE ---
 const gifs = document.querySelectorAll(".gif");
 let i = 0;
 
 setInterval(() => {
-  // 1. Strip 'last-active' from all GIFs
-  gifs.forEach(g => g.classList.remove("last-active"));
-  
-  // 2. The current active GIF becomes 'last-active' so it stays visible while the new one fades in
-  gifs[i].classList.replace("active", "last-active");
-
-  // 3. Move to the next GIF and make it 'active' to trigger the fade-in
+  let oldIndex = i;
   i = (i + 1) % gifs.length;
+
+  // Put old GIF in the background
+  gifs[oldIndex].style.zIndex = "1";
+
+  // Bring new GIF to the front and fade it in
+  gifs[i].style.zIndex = "2";
   gifs[i].classList.add("active");
 
-  // Vibrate on GIF change (if allowed)
-  if(navigator.vibrate) {
+  // Wait EXACTLY 1 second for the fade to finish, then hide the old GIF entirely
+  setTimeout(() => {
+    gifs[oldIndex].classList.remove("active");
+  }, 1000);
+
+  // Vibrate on GIF change
+  if (navigator.vibrate && started) {
     navigator.vibrate([40, 20, 40]);
   }
 }, 8000);
 
-// --- SPARKLES & MOVEMENT VIBRATION ---
+// --- SPARKLES, VIBRATION & SLAP COUNTER ---
+let totalSlaps = 0;
+const counterDisplay = document.getElementById("slapCounter");
+
+function addSlap() {
+  totalSlaps++;
+  counterDisplay.textContent = `Slaps: ${totalSlaps}`;
+}
+
 function sparkle(x, y) {
   const s = document.createElement("div");
   s.className = "sparkle";
@@ -193,15 +227,16 @@ function sparkle(x, y) {
   s.style.top = y + "px";
   document.body.appendChild(s);
   setTimeout(() => s.remove(), 900);
+  
+  addSlap(); // Every sparkle counts as a slap!
 }
 
 let lastVibeTime = 0;
 function moveVibrate() {
-  if (!started) return; // Must tap first!
+  if (!started) return; 
 
   if (navigator.vibrate) {
     const now = Date.now();
-    // Increased throttle to 150ms to prevent Chrome from flagging it as spam
     if (now - lastVibeTime > 150) { 
       navigator.vibrate(30); 
       lastVibeTime = now;
@@ -209,13 +244,16 @@ function moveVibrate() {
   }
 }
 
-// Using modern pointer events for better mobile/desktop compatibility
+// Track mouse and touch movement
 document.addEventListener("pointermove", e => {
-  sparkle(e.clientX, e.clientY);
-  moveVibrate();
+  // Only create sparkles if the user is actually clicking/touching the screen
+  if (e.buttons > 0 || e.pointerType === "touch") {
+    sparkle(e.clientX, e.clientY);
+    moveVibrate();
+  }
 });
 
-// --- MUSIC & TAPS ---
+// --- MUSIC & INITIAL TAP ---
 const iframe = document.getElementById("musicPlayer");
 const btn = document.getElementById("muteButton");
 const msg = document.getElementById("startMessage");
@@ -225,6 +263,9 @@ let playing = false;
 
 function interact(e) {
   if (e.target === btn) return; 
+
+  // Single tap sparkle
+  sparkle(e.clientX, e.clientY);
 
   if (navigator.vibrate) {
     navigator.vibrate(60); 
