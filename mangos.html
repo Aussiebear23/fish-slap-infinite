@@ -199,8 +199,9 @@ function interact(e) {
 
   sparkle(e.clientX, e.clientY);
 
-  if (!started) {
-    iframe.src = "https://www.youtube.com/embed/jEST5pBp078?si=AwWjNzFC4FFyv8UP";
+if (!started) {
+    // Added autoplay and loop parameters to your new Mango track!
+    iframe.src = "https://www.youtube.com/embed/jEST5pBp078?autoplay=1&loop=1&playlist=jEST5pBp078";
     msg.style.display = "none";
     started = true;
     playing = true;
@@ -210,18 +211,20 @@ function interact(e) {
 
 document.addEventListener("pointerdown", interact);
 
+/* mute button */
 btn.onclick = () => {
   if (playing) {
     iframe.src = "";
     btn.textContent = "🔊 Unmute";
     playing = false;
   } else {
-    iframe.src = "https://www.youtube.com/embed/jEST5pBp078?si=AwWjNzFC4FFyv8UP";
+    // Make sure the loop parameters are here too!
+    iframe.src = "https://www.youtube.com/embed/jEST5pBp078?autoplay=1&loop=1&playlist=jEST5pBp078";
     btn.textContent = "🔇 Mute";
     playing = true;
   }
 };
 </script>
-
+  
 </body>
 </html>
