@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mango Madness</title>
+
+<style>
+body {
+  margin: 0;
+  background: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  user-select: none; 
+}
+
+#title {
+  position: fixed;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  color: #FFA500; 
+  font-size: 30px;
+  z-index: 10;
+  font-weight: bold;
+}
+
+#startMessage {
+  font-size: 16px;
+  margin-top: 8px;
+  animation: pulse 1.5s infinite;
+  font-weight: normal;
+  color: white;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+#gifContainer {
+  position: relative;
+  width: 88%;
+  max-width: 900px;
+  height: 55vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media(min-width: 1025px) {
+  #gifContainer { height: 72vh; max-width: 1200px; }
+}
+
+@media(max-width: 600px) {
+  #gifContainer { height: 45vh; width: 95%; }
+  #title { font-size: 24px; }
+}
+
+/* Smooth Crossfade Styling */
+.gif {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; 
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out; 
+  z-index: 0;
+}
+
+.gif.active { opacity: 1; z-index: 2; }
+.gif.last-active { opacity: 1; z-index: 1; }
+
+/* Mango Sparkles */
+.sparkle {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  background: #FFD700; 
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkle 0.9s forwards;
+  z-index: 5;
+  box-shadow: 0 0 10px #FF8C00; 
+}
+
+@keyframes sparkle {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* Mute Button (Bottom Right) */
+#muteButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 14px 20px;
+  font-size: 16px;
+  background: #222;
+  color: white;
+  border: 2px solid #FFA500; 
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 10;
+}
+
+/* Fish Portal Button (Bottom Left) */
+#fishPortal {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 14px 20px;
+  font-size: 16px;
+  background: #222;
+  color: white; 
+  border: 2px solid #444; 
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  z-index: 10;
+}
+
+@media(max-width: 600px) {
+  #muteButton { right: 10px; bottom: 30px; padding: 18px 20px; font-size: 18px; }
+  #fishPortal { left: 10px; bottom: 30px; padding: 18px 20px; font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+<div id="title">
+  MANGO MADNESS 🥭
+  <div id="startMessage">Touch/click for a tropical surprise 😉</div>
+</div>
+
+<div id="gifContainer">
+  <img class="gif active" src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3A3ZndqajN2MjB0NXd5OXl2eDFpNW01M3BtNmY2ZWY0eThwOTV1NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/eipdwxtEBFrdEOAqU8/giphy.gif" alt="Mango 1">
+  <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3VmdWNncmhubzA3cWZ0amxtdHZkMHYxeWZ0ZjVpOTVvZ3piNTI1NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/5tDelK8n41i5G/giphy.gif" alt="Mango 2">
+  <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3VmdWNncmhubzA3cWZ0amxtdHZkMHYxeWZ0ZjVpOTVvZ3piNTI1NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/iBjnO7k4a4XqNWADrq/giphy.gif" alt="Mango 3">
+  <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3VmdWNncmhubzA3cWZ0amxtdHZkMHYxeWZ0ZjVpOTVvZ3piNTI1NyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/nBy9zcdZoslMmIfmrh/giphy.gif" alt="Mango 4">
+  <img class="gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYWJldWxyc3pxZ3ZqdWxvODNjODE2a2xhcmNxdTcxOGtiaHlwenExZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/1suBP9j5hobTktu8ks/giphy.gif" alt="Mango 5">
+  <img class="gif" src="https://media1.tenor.com/m/d9GI8UvELLkAAAAd/mangoes-fruits.gif" alt="Mango 6">
+</div>
+
+<a href="index.html" id="fishPortal">🐟 Back to Fish</a>
+<button id="muteButton">🔊 Mute</button>
+
+<iframe id="musicPlayer" width="0" height="0" src="" allow="autoplay"></iframe>
+
+<script>
+const gifs = document.querySelectorAll(".gif");
+let i = 0;
+
+setInterval(() => {
+  const oldIndex = i;
+  i = (i + 1) % gifs.length;
+
+  gifs[oldIndex].classList.remove("active");
+  gifs[oldIndex].classList.add("last-active");
+  gifs[i].classList.add("active");
+
+  setTimeout(() => {
+    gifs[oldIndex].classList.remove("last-active");
+  }, 800);
+}, 8000);
+
+function sparkle(x, y) {
+  const s = document.createElement("div");
+  s.className = "sparkle";
+  s.style.left = x + "px";
+  s.style.top = y + "px";
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 900);
+}
+
+document.addEventListener("pointermove", e => {
+  sparkle(e.clientX, e.clientY);
+});
+
+const iframe = document.getElementById("musicPlayer");
+const btn = document.getElementById("muteButton");
+const msg = document.getElementById("startMessage");
+
+let started = false;
+let playing = false;
+
+function interact(e) {
+  // Prevent clicks on the buttons from triggering the main screen click
+  if (e.target.closest('button') || e.target.closest('a')) return; 
+
+  sparkle(e.clientX, e.clientY);
+
+  if (!started) {
+    iframe.src = "https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
+    msg.style.display = "none";
+    started = true;
+    playing = true;
+    btn.textContent = "🔇 Mute";
+  }
+}
+
+document.addEventListener("pointerdown", interact);
+
+btn.onclick = () => {
+  if (playing) {
+    iframe.src = "";
+    btn.textContent = "🔊 Unmute";
+    playing = false;
+  } else {
+    iframe.src = "https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
+    btn.textContent = "🔇 Mute";
+    playing = true;
+  }
+};
+</script>
+
+</body>
+</html>
