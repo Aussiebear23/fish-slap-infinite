@@ -63,30 +63,39 @@ body {
 /* Mobile Sizing */
 @media(max-width: 600px) {
   #gifContainer {
-    height: 45vh; /* slightly taller for better mobile viewing */
+    height: 45vh; 
     width: 95%;
   }
   #title {
-    font-size: 24px; /* shrink title slightly on mobile */
+    font-size: 24px; 
   }
 }
 
-/* GIF - Fixed to scale perfectly */
+/* ✅ FIXED: Smooth GIF Crossfades */
 .gif {
   position: absolute;
   width: 100%;
   height: 100%;
-  object-fit: contain; /* MAGIC SAUCE: Keeps aspect ratio, fits to container */
+  object-fit: contain; 
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   border-radius: 12px;
   opacity: 0;
-  transition: opacity 1s ease;
+  z-index: 1; /* Default background layer */
+  transition: opacity 1s ease-in-out;
 }
 
+/* The GIF fading out stays underneath */
+.gif.last-active {
+  opacity: 1;
+  z-index: 1; 
+}
+
+/* The new GIF fades in on top */
 .gif.active {
   opacity: 1;
+  z-index: 2; 
 }
 
 /* Sparkles */
@@ -155,16 +164,22 @@ body {
 <iframe id="musicPlayer" width="0" height="0" src="" allow="autoplay"></iframe>
 
 <script>
-// --- GIF ROTATION ---
+// --- ✅ FIXED: SMOOTH GIF ROTATION ---
 const gifs = document.querySelectorAll(".gif");
 let i = 0;
 
 setInterval(() => {
-  gifs[i].classList.remove("active");
+  // 1. Strip 'last-active' from all GIFs
+  gifs.forEach(g => g.classList.remove("last-active"));
+  
+  // 2. The current active GIF becomes 'last-active' so it stays visible while the new one fades in
+  gifs[i].classList.replace("active", "last-active");
+
+  // 3. Move to the next GIF and make it 'active' to trigger the fade-in
   i = (i + 1) % gifs.length;
   gifs[i].classList.add("active");
 
-  // Vibrate on GIF change (Android only)
+  // Vibrate on GIF change (if allowed)
   if(navigator.vibrate) {
     navigator.vibrate([40, 20, 40]);
   }
@@ -180,25 +195,23 @@ function sparkle(x, y) {
   setTimeout(() => s.remove(), 900);
 }
 
-// Throttle vibration so the browser doesn't block it for spamming
 let lastVibeTime = 0;
 function moveVibrate() {
+  if (!started) return; // Must tap first!
+
   if (navigator.vibrate) {
     const now = Date.now();
-    if (now - lastVibeTime > 80) { // Only vibrate once every 80ms while dragging
-      navigator.vibrate(15); // Short, snappy tick
+    // Increased throttle to 150ms to prevent Chrome from flagging it as spam
+    if (now - lastVibeTime > 150) { 
+      navigator.vibrate(30); 
       lastVibeTime = now;
     }
   }
 }
 
-document.addEventListener("mousemove", e => {
+// Using modern pointer events for better mobile/desktop compatibility
+document.addEventListener("pointermove", e => {
   sparkle(e.clientX, e.clientY);
-  moveVibrate();
-});
-
-document.addEventListener("touchmove", e => {
-  sparkle(e.touches[0].clientX, e.touches[0].clientY);
   moveVibrate();
 });
 
@@ -211,14 +224,12 @@ let started = false;
 let playing = false;
 
 function interact(e) {
-  // Prevent button clicks from triggering the main interact twice
   if (e.target === btn) return; 
 
   if (navigator.vibrate) {
-    navigator.vibrate(60); // Vibrate on tap
+    navigator.vibrate(60); 
   }
 
-  // Start music on first tap
   if (!started) {
     iframe.src = "https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
     msg.style.display = "none";
