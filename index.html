@@ -18,7 +18,7 @@ font-family:Arial, sans-serif;
 overflow:hidden;
 }
 
-/* Title always above */
+/* Title */
 #title{
 position:fixed;
 top:20px;
@@ -30,20 +30,22 @@ z-index:10;
 text-shadow:0 0 10px black;
 }
 
-/* Responsive GIF container */
+/* GIF container */
 #gifContainer{
 position:relative;
 width:90%;
 max-width:900px;
-aspect-ratio:16/9;
+height:70vh;
 }
 
-/* GIF styling */
+/* GIFs */
 .gif{
 position:absolute;
-width:100%;
-height:100%;
-object-fit:contain;
+max-width:100%;
+max-height:100%;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
 border-radius:12px;
 opacity:0;
 transition:opacity 1s ease;
@@ -53,7 +55,7 @@ transition:opacity 1s ease;
 opacity:1;
 }
 
-/* sparkle particles */
+/* Sparkles */
 .sparkle{
 position:fixed;
 width:10px;
@@ -69,19 +71,37 @@ animation:sparkleAnim 0.9s forwards;
 100%{transform:scale(4);opacity:0;}
 }
 
-/* mute button */
+/* Default button (PC) */
 #muteButton{
 position:fixed;
 bottom:20px;
 right:20px;
-padding:10px 16px;
+padding:12px 18px;
 font-size:16px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 background:#222;
 color:white;
 cursor:pointer;
 z-index:20;
+}
+
+/* Tablet */
+body.tablet #muteButton{
+padding:16px 24px;
+font-size:18px;
+border-radius:12px;
+}
+
+/* Mobile */
+body.mobile #muteButton{
+left:50%;
+right:auto;
+transform:translateX(-50%);
+bottom:25px;
+padding:20px 30px;
+font-size:20px;
+border-radius:14px;
 }
 
 </style>
@@ -103,9 +123,10 @@ z-index:20;
 
 </div>
 
+<!-- YOUR EXACT BUTTON -->
 <button id="muteButton">🔊 Mute</button>
 
-<!-- Background music -->
+<!-- YOUR EXACT IFRAME -->
 <iframe
 id="musicPlayer"
 width="0"
@@ -117,6 +138,42 @@ allow="autoplay">
 
 <script>
 
+/* DEVICE DETECTION */
+function detectDevice(){
+const width = window.innerWidth;
+
+if(width <= 600){
+document.body.classList.add("mobile");
+}
+else if(width <= 1024){
+document.body.classList.add("tablet");
+}
+else{
+document.body.classList.add("desktop");
+}
+}
+
+detectDevice();
+
+window.addEventListener("resize", ()=>{
+document.body.classList.remove("mobile","tablet","desktop");
+detectDevice();
+});
+
+/* VIBRATION */
+function vibrateTap(){
+if(navigator.vibrate){
+navigator.vibrate(50);
+}
+}
+
+function vibrateSlap(){
+if(navigator.vibrate){
+navigator.vibrate([40, 20, 40]);
+}
+}
+
+/* GIF LOOP */
 const gifs = document.querySelectorAll(".gif");
 let index = 0;
 
@@ -124,46 +181,45 @@ function nextGif(){
 gifs[index].classList.remove("active");
 index = (index + 1) % gifs.length;
 gifs[index].classList.add("active");
+
+vibrateSlap(); // 🐟 slap vibration
 }
 
-setInterval(nextGif, 4000);
+setInterval(nextGif, 8000);
 
-/* sparkle effect */
-
+/* SPARKLES */
 function sparkle(x,y){
 const s=document.createElement("div");
 s.className="sparkle";
 s.style.left=x+"px";
 s.style.top=y+"px";
 document.body.appendChild(s);
-setTimeout(()=>{s.remove();},900);
+setTimeout(()=>s.remove(),900);
 }
 
-document.addEventListener("mousemove",(e)=>{
-sparkle(e.clientX,e.clientY);
-});
-
+document.addEventListener("mousemove",(e)=>sparkle(e.clientX,e.clientY));
 document.addEventListener("touchmove",(e)=>{
 const t=e.touches[0];
 sparkle(t.clientX,t.clientY);
 });
 
-/* mute / unmute */
+/* MUSIC CONTROL */
+let playing = true;
+const iframe = document.getElementById("musicPlayer");
+const button = document.getElementById("muteButton");
 
-let muted=false;
+button.onclick = function(){
 
-document.getElementById("muteButton").onclick=function(){
+vibrateTap(); // 📳 tap feedback
 
-const iframe=document.getElementById("musicPlayer");
-
-if(muted){
-iframe.src="https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
-this.textContent="🔊 Mute";
-muted=false;
+if(playing){
+iframe.src = "";
+button.textContent = "🔊 Unmute";
+playing = false;
 }else{
-iframe.src="";
-this.textContent="🔇 Unmute";
-muted=true;
+iframe.src = "https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
+button.textContent = "🔇 Mute";
+playing = true;
 }
 
 };
