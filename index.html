@@ -74,7 +74,7 @@ body {
   }
 }
 
-/* GIF Styling - Snaps instantly now! */
+/* ✅ SMOOTH CROSSFADE STYLING */
 .gif {
   position: absolute;
   width: 100%;
@@ -85,12 +85,20 @@ body {
   transform: translate(-50%, -50%);
   border-radius: 12px;
   opacity: 0;
-  z-index: 1;
+  transition: opacity 0.8s ease-in-out; /* 0.8 second smooth fade */
+  z-index: 0;
 }
 
+/* The new GIF fading in on top */
 .gif.active {
   opacity: 1;
   z-index: 2;
+}
+
+/* The old GIF staying visible underneath until the fade finishes */
+.gif.last-active {
+  opacity: 1;
+  z-index: 1;
 }
 
 /* Sparkles */
@@ -161,17 +169,25 @@ body {
 <iframe id="musicPlayer" width="0" height="0" src="" allow="autoplay"></iframe>
 
 <script>
-// --- INSTANT GIF ROTATION ---
+// --- SMOOTH GIF ROTATION LOGIC ---
 const gifs = document.querySelectorAll(".gif");
 let i = 0;
 
 setInterval(() => {
-  // Instantly hide all GIFs
-  gifs.forEach(g => g.classList.remove("active"));
-  
-  // Move to the next one and instantly show it
+  const oldIndex = i;
   i = (i + 1) % gifs.length;
+
+  // 1. Move current GIF to the background layer (last-active)
+  gifs[oldIndex].classList.remove("active");
+  gifs[oldIndex].classList.add("last-active");
+
+  // 2. Bring the new GIF to the front and trigger the smooth fade-in (active)
   gifs[i].classList.add("active");
+
+  // 3. Remove the old GIF from the background exactly when the fade finishes (800ms)
+  setTimeout(() => {
+    gifs[oldIndex].classList.remove("last-active");
+  }, 800);
 
   // Vibrate on GIF change
   if (navigator.vibrate && started) {
@@ -202,7 +218,7 @@ function moveVibrate() {
   }
 }
 
-// Track mouse and touch movement (No clicking required anymore!)
+// Track mouse and touch movement (Hovering works instantly now)
 document.addEventListener("pointermove", e => {
   sparkle(e.clientX, e.clientY);
   moveVibrate();
