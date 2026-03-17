@@ -217,25 +217,12 @@ btn.onclick = () => {
     navigator.vibrate(60);
   }
 
-  if (!started) {
-    // Added autoplay and loop parameters to your new Mango track!
-    iframe.src = "https://www.youtube.com/embed/wKYjlh5rMfw?autoplay=1&loop=1&playlist=wKYjlh5rMfw";
-    msg.style.display = "none";
-    started = true;
-    playing = true;
-    btn.textContent = "🔇 Mute";
-}
-
-document.addEventListener("pointerdown", interact);
-
-/* mute button */
-btn.onclick = () => {
   if (playing) {
     iframe.src = "";
     btn.textContent = "🔊 Unmute";
     playing = false;
   } else {
-    // Make sure the loop parameters are here too!
+    // Make sure to update it here too so it plays when unmuted!
     iframe.src = "https://www.youtube.com/embed/wKYjlh5rMfw?autoplay=1&loop=1&playlist=wKYjlh5rMfw";
     btn.textContent = "🔇 Mute";
     playing = true;
