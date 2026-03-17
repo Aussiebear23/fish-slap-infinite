@@ -15,7 +15,7 @@ body {
   height: 100vh;
   overflow: hidden;
   font-family: Arial, sans-serif;
-  user-select: none; /* Prevents accidental text highlighting while slapping */
+  user-select: none; 
 }
 
 /* Title */
@@ -74,7 +74,7 @@ body {
   }
 }
 
-/* GIF Styling */
+/* GIF Styling - Snaps instantly now! */
 .gif {
   position: absolute;
   width: 100%;
@@ -85,11 +85,12 @@ body {
   transform: translate(-50%, -50%);
   border-radius: 12px;
   opacity: 0;
-  transition: opacity 1s ease-in-out;
+  z-index: 1;
 }
 
 .gif.active {
   opacity: 1;
+  z-index: 2;
 }
 
 /* Sparkles */
@@ -112,31 +113,11 @@ body {
   }
 }
 
-/* Controls Container (Bottom layout) */
-#controls {
-  position: fixed;
-  bottom: 20px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  box-sizing: border-box;
-  z-index: 10;
-}
-
-/* Slap Counter */
-#slapCounter {
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 10px 15px;
-  border-radius: 10px;
-}
-
 /* Button */
 #muteButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   padding: 14px 20px;
   font-size: 16px;
   background: #222;
@@ -145,20 +126,18 @@ body {
   border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
+  z-index: 10;
 }
 
-/* BIG mobile controls */
+/* BIG mobile button */
 @media(max-width: 600px) {
-  #controls {
-    bottom: 30px;
-  }
   #muteButton {
+    left: 50%;
+    transform: translateX(-50%);
     padding: 18px 28px;
     font-size: 20px;
     border-radius: 16px;
-  }
-  #slapCounter {
-    font-size: 18px;
+    bottom: 30px;
   }
 }
 </style>
@@ -171,39 +150,28 @@ body {
 </div>
 
 <div id="gifContainer">
-  <img class="gif active" style="z-index: 2;" src="https://media.giphy.com/media/rgjwOLuv0azHW/giphy.gif" alt="Fish slap 1">
+  <img class="gif active" src="https://media.giphy.com/media/rgjwOLuv0azHW/giphy.gif" alt="Fish slap 1">
   <img class="gif" src="https://media.giphy.com/media/jX708Wo6abfC8/giphy.gif" alt="Fish slap 2">
   <img class="gif" src="https://media.giphy.com/media/xT0BKGkoBW46ip9OvK/giphy.gif" alt="Fish slap 3">
   <img class="gif" src="https://media.giphy.com/media/y6IvUPfopAZqg/giphy.gif" alt="Fish slap 4">
 </div>
 
-<div id="controls">
-  <div id="slapCounter">Slaps: 0</div>
-  <button id="muteButton">🔊 Mute</button>
-</div>
+<button id="muteButton">🔊 Mute</button>
 
 <iframe id="musicPlayer" width="0" height="0" src="" allow="autoplay"></iframe>
 
 <script>
-// --- ✅ PERFECTED GIF CROSSFADE ---
+// --- INSTANT GIF ROTATION ---
 const gifs = document.querySelectorAll(".gif");
 let i = 0;
 
 setInterval(() => {
-  let oldIndex = i;
+  // Instantly hide all GIFs
+  gifs.forEach(g => g.classList.remove("active"));
+  
+  // Move to the next one and instantly show it
   i = (i + 1) % gifs.length;
-
-  // Put old GIF in the background
-  gifs[oldIndex].style.zIndex = "1";
-
-  // Bring new GIF to the front and fade it in
-  gifs[i].style.zIndex = "2";
   gifs[i].classList.add("active");
-
-  // Wait EXACTLY 1 second for the fade to finish, then hide the old GIF entirely
-  setTimeout(() => {
-    gifs[oldIndex].classList.remove("active");
-  }, 1000);
 
   // Vibrate on GIF change
   if (navigator.vibrate && started) {
@@ -211,15 +179,7 @@ setInterval(() => {
   }
 }, 8000);
 
-// --- SPARKLES, VIBRATION & SLAP COUNTER ---
-let totalSlaps = 0;
-const counterDisplay = document.getElementById("slapCounter");
-
-function addSlap() {
-  totalSlaps++;
-  counterDisplay.textContent = `Slaps: ${totalSlaps}`;
-}
-
+// --- SPARKLES & VIBRATION ---
 function sparkle(x, y) {
   const s = document.createElement("div");
   s.className = "sparkle";
@@ -227,8 +187,6 @@ function sparkle(x, y) {
   s.style.top = y + "px";
   document.body.appendChild(s);
   setTimeout(() => s.remove(), 900);
-  
-  addSlap(); // Every sparkle counts as a slap!
 }
 
 let lastVibeTime = 0;
@@ -244,13 +202,10 @@ function moveVibrate() {
   }
 }
 
-// Track mouse and touch movement
+// Track mouse and touch movement (No clicking required anymore!)
 document.addEventListener("pointermove", e => {
-  // Only create sparkles if the user is actually clicking/touching the screen
-  if (e.buttons > 0 || e.pointerType === "touch") {
-    sparkle(e.clientX, e.clientY);
-    moveVibrate();
-  }
+  sparkle(e.clientX, e.clientY);
+  moveVibrate();
 });
 
 // --- MUSIC & INITIAL TAP ---
@@ -264,7 +219,6 @@ let playing = false;
 function interact(e) {
   if (e.target === btn) return; 
 
-  // Single tap sparkle
   sparkle(e.clientX, e.clientY);
 
   if (navigator.vibrate) {
