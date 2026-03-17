@@ -6,124 +6,132 @@
 <title>Fish Slap Infinite</title>
 
 <style>
-body{
-  margin:0;
-  background:#111;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  overflow:hidden;
-  font-family:Arial;
+body {
+  margin: 0;
+  background: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  font-family: Arial;
 }
 
 /* Title */
-#title{
-  position:fixed;
-  top:20px;
-  width:100%;
-  text-align:center;
-  color:white;
-  font-size:30px;
-  z-index:10;
+#title {
+  position: fixed;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 30px;
+  z-index: 10;
 }
 
 /* Message */
-#startMessage{
-  font-size:16px;
-  margin-top:8px;
-  animation:pulse 1.5s infinite;
+#startMessage {
+  font-size: 16px;
+  margin-top: 8px;
+  animation: pulse 1.5s infinite;
 }
 
-@keyframes pulse{
-  0%{opacity:0.6;}
-  50%{opacity:1;}
-  100%{opacity:0.6;}
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
 }
 
 /* GIF container */
-#gifContainer{
-  position:relative;
-  width:88%;
-  max-width:900px;
-  height:55vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+#gifContainer {
+  position: relative;
+  width: 88%;
+  max-width: 900px;
+  height: 55vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* ✅ FIXED: Bigger on PC */
-@media(min-width:1025px){
-  #gifContainer{
-    height:72vh;
-    max-width:1200px;
+/* PC Sizing */
+@media(min-width: 1025px) {
+  #gifContainer {
+    height: 72vh;
+    max-width: 1200px;
   }
 }
 
-/* Mobile */
-@media(max-width:600px){
-  #gifContainer{
-    height:38vh;
-    max-width:92%;
+/* Mobile Sizing */
+@media(max-width: 600px) {
+  #gifContainer {
+    height: 45vh; /* slightly taller for better mobile viewing */
+    width: 95%;
+  }
+  #title {
+    font-size: 24px; /* shrink title slightly on mobile */
   }
 }
 
-/* GIF */
-.gif{
-  position:absolute;
-  max-width:100%;
-  max-height:100%;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  border-radius:12px;
-  opacity:0;
-  transition:opacity 1s ease;
+/* GIF - Fixed to scale perfectly */
+.gif {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* MAGIC SAUCE: Keeps aspect ratio, fits to container */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 1s ease;
 }
 
-.gif.active{
-  opacity:1;
+.gif.active {
+  opacity: 1;
 }
 
 /* Sparkles */
-.sparkle{
-  position:fixed;
-  width:10px;
-  height:10px;
-  background:white;
-  border-radius:50%;
-  pointer-events:none;
-  animation:sparkle 0.9s forwards;
+.sparkle {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkle 0.9s forwards;
+  z-index: 5;
 }
 
-@keyframes sparkle{
-  to{
-    transform:scale(4);
-    opacity:0;
+@keyframes sparkle {
+  to {
+    transform: scale(4);
+    opacity: 0;
   }
 }
 
 /* Button */
-#muteButton{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  padding:14px 20px;
-  font-size:16px;
-  background:#222;
-  color:white;
-  border:none;
-  border-radius:10px;
+#muteButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 14px 20px;
+  font-size: 16px;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  z-index: 10;
+  cursor: pointer;
 }
 
 /* BIG mobile button */
-@media(max-width:600px){
-  #muteButton{
-    left:50%;
-    transform:translateX(-50%);
-    padding:22px 36px;
-    font-size:22px;
-    border-radius:16px;
+@media(max-width: 600px) {
+  #muteButton {
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 22px 36px;
+    font-size: 22px;
+    border-radius: 16px;
+    bottom: 30px;
   }
 }
 </style>
@@ -136,90 +144,106 @@ body{
 </div>
 
 <div id="gifContainer">
-  <img class="gif active" src="https://media.giphy.com/media/rgjwOLuv0azHW/giphy.gif">
-  <img class="gif" src="https://media.giphy.com/media/jX708Wo6abfC8/giphy.gif">
-  <img class="gif" src="https://media.giphy.com/media/xT0BKGkoBW46ip9OvK/giphy.gif">
-  <img class="gif" src="https://media.giphy.com/media/y6IvUPfopAZqg/giphy.gif">
+  <img class="gif active" src="https://media.giphy.com/media/rgjwOLuv0azHW/giphy.gif" alt="Fish slap 1">
+  <img class="gif" src="https://media.giphy.com/media/jX708Wo6abfC8/giphy.gif" alt="Fish slap 2">
+  <img class="gif" src="https://media.giphy.com/media/xT0BKGkoBW46ip9OvK/giphy.gif" alt="Fish slap 3">
+  <img class="gif" src="https://media.giphy.com/media/y6IvUPfopAZqg/giphy.gif" alt="Fish slap 4">
 </div>
 
 <button id="muteButton">🔊 Mute</button>
 
-<!-- Music -->
-<iframe id="musicPlayer"
-width="0"
-height="0"
-src=""
-allow="autoplay">
-</iframe>
+<iframe id="musicPlayer" width="0" height="0" src="" allow="autoplay"></iframe>
 
 <script>
+// --- GIF ROTATION ---
 const gifs = document.querySelectorAll(".gif");
 let i = 0;
 
-setInterval(()=>{
+setInterval(() => {
   gifs[i].classList.remove("active");
-  i = (i+1)%gifs.length;
+  i = (i + 1) % gifs.length;
   gifs[i].classList.add("active");
 
-  if(navigator.vibrate){
-    navigator.vibrate([40,20,40]);
+  // Vibrate on GIF change (Android only)
+  if(navigator.vibrate) {
+    navigator.vibrate([40, 20, 40]);
   }
-},8000);
+}, 8000);
 
-/* sparkles */
-function sparkle(x,y){
-  const s=document.createElement("div");
-  s.className="sparkle";
-  s.style.left=x+"px";
-  s.style.top=y+"px";
+// --- SPARKLES & MOVEMENT VIBRATION ---
+function sparkle(x, y) {
+  const s = document.createElement("div");
+  s.className = "sparkle";
+  s.style.left = x + "px";
+  s.style.top = y + "px";
   document.body.appendChild(s);
-  setTimeout(()=>s.remove(),900);
+  setTimeout(() => s.remove(), 900);
 }
 
-document.addEventListener("mousemove",e=>sparkle(e.clientX,e.clientY));
-document.addEventListener("touchmove",e=>{
-  sparkle(e.touches[0].clientX,e.touches[0].clientY);
+// Throttle vibration so the browser doesn't block it for spamming
+let lastVibeTime = 0;
+function moveVibrate() {
+  if (navigator.vibrate) {
+    const now = Date.now();
+    if (now - lastVibeTime > 80) { // Only vibrate once every 80ms while dragging
+      navigator.vibrate(15); // Short, snappy tick
+      lastVibeTime = now;
+    }
+  }
+}
+
+document.addEventListener("mousemove", e => {
+  sparkle(e.clientX, e.clientY);
+  moveVibrate();
 });
 
-/* music */
-const iframe=document.getElementById("musicPlayer");
-const btn=document.getElementById("muteButton");
-const msg=document.getElementById("startMessage");
+document.addEventListener("touchmove", e => {
+  sparkle(e.touches[0].clientX, e.touches[0].clientY);
+  moveVibrate();
+});
 
-let started=false;
-let playing=false;
+// --- MUSIC & TAPS ---
+const iframe = document.getElementById("musicPlayer");
+const btn = document.getElementById("muteButton");
+const msg = document.getElementById("startMessage");
 
-/* tap anywhere */
-function interact(){
-  if(navigator.vibrate){
-    navigator.vibrate(60);
+let started = false;
+let playing = false;
+
+function interact(e) {
+  // Prevent button clicks from triggering the main interact twice
+  if (e.target === btn) return; 
+
+  if (navigator.vibrate) {
+    navigator.vibrate(60); // Vibrate on tap
   }
 
-  if(!started){
-    iframe.src="https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
-    msg.style.display="none";
-    started=true;
-    playing=true;
-    btn.textContent="🔇 Mute";
+  // Start music on first tap
+  if (!started) {
+    iframe.src = "https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
+    msg.style.display = "none";
+    started = true;
+    playing = true;
+    btn.textContent = "🔇 Mute";
   }
 }
 
-document.addEventListener("pointerdown",interact);
+document.addEventListener("pointerdown", interact);
 
-/* button */
-btn.onclick=()=>{
-  if(navigator.vibrate){
+// --- MUTE BUTTON ---
+btn.onclick = () => {
+  if (navigator.vibrate) {
     navigator.vibrate(60);
   }
 
-  if(playing){
-    iframe.src="";
-    btn.textContent="🔊 Unmute";
-    playing=false;
-  }else{
-    iframe.src="https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
-    btn.textContent="🔇 Mute";
-    playing=true;
+  if (playing) {
+    iframe.src = "";
+    btn.textContent = "🔊 Unmute";
+    playing = false;
+  } else {
+    iframe.src = "https://www.youtube.com/embed/U06jlgpMtQs?autoplay=1&loop=1&playlist=U06jlgpMtQs";
+    btn.textContent = "🔇 Mute";
+    playing = true;
   }
 };
 </script>
