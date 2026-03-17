@@ -200,8 +200,8 @@ function interact(e) {
   sparkle(e.clientX, e.clientY);
 
 if (!started) {
-    // Added autoplay and loop parameters to your new Mango track!
-    iframe.src = "https://www.youtube.com/embed/jEST5pBp078?autoplay=1&loop=1&playlist=jEST5pBp078";
+    // New audio: "I'm a Mango" 
+    iframe.src = "https://www.youtube.com/embed/CfbmFka83Ko?autoplay=1&loop=1&playlist=CfbmFka83Ko";
     msg.style.display = "none";
     started = true;
     playing = true;
@@ -213,13 +213,17 @@ document.addEventListener("pointerdown", interact);
 
 /* mute button */
 btn.onclick = () => {
+  if (navigator.vibrate) {
+    navigator.vibrate(60);
+  }
+
   if (playing) {
     iframe.src = "";
     btn.textContent = "🔊 Unmute";
     playing = false;
   } else {
-    // Make sure the loop parameters are here too!
-    iframe.src = "https://www.youtube.com/embed/jEST5pBp078?autoplay=1&loop=1&playlist=jEST5pBp078";
+    // Make sure to update it here too so it plays when unmuted!
+    iframe.src = "https://www.youtube.com/embed/CfbmFka83Ko?autoplay=1&loop=1&playlist=CfbmFka83Ko";
     btn.textContent = "🔇 Mute";
     playing = true;
   }
